@@ -1,12 +1,10 @@
 [package]
-# TODO: Rename this package to change the method name from METHOD_NAME
-name = "method_name"
+name = "blind_rotate"
 version = "0.1.0"
 edition = "2021"
 
 [workspace]
 
 [dependencies]
-# If you want to try (experimental) std support, add `features = [ "std" ]` to risc0-zkvm
 risc0-zkvm = { version = "0.17.0", default-features = false, features = [ "std" ] }
-ttfhe = { path = "../../ttfhe" }
+ttfhe = { git = "https://github.com/tremblaythibaultl/ttfhe.git" }
