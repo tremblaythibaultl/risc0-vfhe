@@ -7,7 +7,7 @@ use ttfhe::{ggsw::BootstrappingKey, glwe::GlweCiphertext, lwe::LweCiphertext};
 risc0_zkvm::guest::entry!(main);
 
 pub fn main() {
-    // bincode can serialize `bsk` into an blob that weighs 39.9MB on disk.
+    // bincode can serialize `bsk` into a blob that weighs 39.9MB on disk.
     // This `env::read()` call doesn't seem to stop - memory is allocated until the process goes OOM.
     let (c, bsk): (LweCiphertext, BootstrappingKey) = env::read();
 
