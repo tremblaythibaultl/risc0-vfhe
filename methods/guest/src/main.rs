@@ -8,7 +8,7 @@ risc0_zkvm::guest::entry!(main);
 
 pub fn main() {
     // bincode can serialize `bsk` into a blob that weighs 39.9MB on disk.
-    // This `env::read()` call doesn't seem to stop - memory is allocated until the process goes OOM.
+    // This `env::read()` call doesn't seem to stop - memory is allocated until the process goes OOM with risc0 v0.17.0.
     let (c, bsk): (LweCiphertext, BootstrappingKey) = env::read();
 
     let lut = GlweCiphertext::trivial_encrypt_lut_poly();
