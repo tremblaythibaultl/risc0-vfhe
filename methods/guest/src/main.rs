@@ -3,21 +3,19 @@
 // #![no_std]  // std support is experimental
 
 use risc0_zkvm::guest::env;
-use ttfhe::{ggsw::BootstrappingKey, glwe::GlweCiphertext, lwe::LweCiphertext};
+use ttfhe::{
+    ggsw::{cmux, GgswCiphertext},
+    glwe::GlweCiphertext,
+};
 risc0_zkvm::guest::entry!(main);
 
 pub fn main() {
-    // bincode can serialize `bsk` into a blob that weighs 39.9MB on disk.
-    // This `env::read()` call doesn't seem to stop - memory is allocated until the process goes OOM with risc0 v0.17.0.
-    let (c, bsk): (LweCiphertext, BootstrappingKey) = env::read();
+    println!("cycle count: {}", env::get_cycle_count());
+    // Reading the three components required to perform one step of the blind rotation (one CMUX)
+    let (bsk_i, c_prime, c_prime_rotated): (GgswCiphertext, GlweCiphertext, GlweCiphertext) =
+        env::read();
 
-    let lut = GlweCiphertext::trivial_encrypt_lut_poly();
+    let res = cmux(&bsk_i, &c_prime, &c_prime_rotated);
 
-    // `blind_rotate` is a quite heavy computation that takes ~2s to perform on a M2 MBP.
-    // Maybe this is why the process is running OOM?
-    let blind_rotated_lut = lut.blind_rotate(c, &bsk);
-
-    let res_ct = blind_rotated_lut.sample_extract();
-
-    env::commit(&res_ct);
+    env::commit(&res);
 }
