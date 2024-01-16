@@ -44,7 +44,7 @@ fn step_by_step_blind_rotation(c: &LweCiphertext, bsk: &BootstrappingKey) {
         receipt.verify(BLIND_ROTATE_ID).unwrap();
         c_prime = receipt.journal.decode().unwrap();
         println!(
-            "Computed bootstrapping step number {i} in {}",
+            "Computed blind rotation step number {i} in {}",
             now.elapsed().as_secs()
         );
     }

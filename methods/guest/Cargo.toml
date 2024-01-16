@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 risc0-zkvm = { version = "0.19.1", default-features = false, features = [ "std" ] }
-ttfhe = { git = "https://github.com/tremblaythibaultl/ttfhe.git", branch = "32bit" }
+ttfhe = { git = "https://github.com/tremblaythibaultl/ttfhe.git", branch = "karatsuba" }
