@@ -15,10 +15,17 @@ pub fn main() {
     let (bsk_i, c_prime, c_prime_rotated): (GgswCiphertext, GlweCiphertext, GlweCiphertext) =
         env::read();
 
+    let after_load = env::get_cycle_count();
+
     let res = cmux(&bsk_i, &c_prime, &c_prime_rotated);
+
+    let after_cmux = env::get_cycle_count();
 
     env::commit(&res);
     let end = env::get_cycle_count();
 
-    eprintln!("start: {}, end: {}", start, end);
+    eprintln!(
+        "start: {}\nafter load (before cmux): {}\nafter cmux: {}\nend: {}",
+        start, after_load, after_cmux, end
+    );
 }
