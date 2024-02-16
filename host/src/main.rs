@@ -39,7 +39,7 @@ fn step_by_step_blind_rotation(c: &LweCiphertext, bsk: &BootstrappingKey) {
 
         let prover = default_prover();
 
-        let receipt = prover.prove_elf(env, BLIND_ROTATE_ELF).unwrap();
+        let receipt = prover.prove(env, BLIND_ROTATE_ELF).unwrap();
 
         receipt.verify(BLIND_ROTATE_ID).unwrap();
         c_prime = receipt.journal.decode().unwrap();
