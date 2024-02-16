@@ -10,19 +10,19 @@ use ttfhe::{
 risc0_zkvm::guest::entry!(main);
 
 pub fn main() {
-    let start = env::get_cycle_count();
+    let start = env::cycle_count();
     // Reading the three components required to perform one step of the blind rotation (one CMUX)
     let (bsk_i, c_prime, c_prime_rotated): (GgswCiphertext, GlweCiphertext, GlweCiphertext) =
         env::read();
 
-    let after_load = env::get_cycle_count();
+    let after_load = env::cycle_count();
 
     let res = cmux(&bsk_i, &c_prime, &c_prime_rotated);
 
-    let after_cmux = env::get_cycle_count();
+    let after_cmux = env::cycle_count();
 
     env::commit(&res);
-    let end = env::get_cycle_count();
+    let end = env::cycle_count();
 
     eprintln!(
         "start: {}\nafter load (before cmux): {}\nafter cmux: {}\nend: {}",
