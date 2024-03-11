@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use methods::{BLIND_ROTATE_ELF, BLIND_ROTATE_ID};
 use risc0_zkvm::{default_prover, ExecutorEnv};
 use ttfhe::{
@@ -26,9 +28,18 @@ fn main() {
 
     let prover = default_prover();
 
+    let now = Instant::now();
+    
+    println!("Starting prover at {}", now.elapsed().as_secs());
+
     let receipt = prover.prove(env, BLIND_ROTATE_ELF).unwrap();
 
+    println!("Prover finished at {}, starting verifier", now.elapsed().as_secs());
+    
     receipt.verify(BLIND_ROTATE_ID).unwrap();
+    
+    println!("Verifier finished at {}", now.elapsed().as_secs());
+
     let res_ct: LweCiphertext = receipt.journal.decode().unwrap();
     let res_pt = decode_bootstrapped(res_ct.decrypt(&sk1));
     println!("Computed bootstrapping and got plaintext {}", res_pt);
