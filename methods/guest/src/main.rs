@@ -13,28 +13,33 @@ use ttfhe::{
 risc0_zkvm::guest::entry!(main);
 
 pub fn main() {
-    let start = env::get_cycle_count();
-    // bincode can serialize `bsk` into a blob that weighs 39.9MB on disk.
-    // This `env::read()` call doesn't seem to stop - memory is allocated until the process goes OOM with risc0 v0.17.0.
-    // let (c, bsk): (LweCiphertext, BootstrappingKey) = env::read();
+    let start = env::cycle_count();
+    
+    let c: LweCiphertext = env::read();
+
+    let after_read = env::cycle_count();
 
     static BSK_BYTES: &[u8] = include_bytes_aligned!(8, "../../../data/bsk");
-    // static CT_BYTES: &[u8] = include_bytes_aligned!(8, "../../../data/ct");
+    
+    let after_include_bytes = env::cycle_count();
 
     let bsk = unsafe { std::mem::transmute::<&u8, &[GgswCiphertext; LWE_DIM]>(&BSK_BYTES[0]) };
+
+    let after_transmute = env::cycle_count();
 
     // let ct: LweCiphertext = unsafe { std::mem::transmute::<&u8, LweCiphertext>(&CT_BYTES[0]) };
 
     let lut = GlweCiphertext::trivial_encrypt_lut_poly();
 
-    // `blind_rotate` is a quite heavy computation that takes ~2s to perform on a M2 MBP.
-    // Maybe this is why the process is running OOM?
     let blind_rotated_lut = lut.blind_rotate(c, &bsk.to_vec());
 
-    // let res_ct = blind_rotated_lut.sample_extract();
+    let res_ct = blind_rotated_lut.sample_extract();
 
-    // env::commit(&res_ct);
+    let after_br = env::cycle_count();
 
-    let end = env::get_cycle_count();
-    eprintln!("start: {}, end: {}", start, end);
+
+    env::commit(&res_ct);
+
+    let end = env::cycle_count();
+    eprintln!("start: {}, after_read: {}, after_include_bytes {}, after_transmute: {}, after_br: {}, end: {}", start, after_read, after_include_bytes, after_transmute, after_br, end);
 }
