@@ -19,7 +19,7 @@ pub fn main() {
 
     let after_read = env::cycle_count();
 
-    static BSK_BYTES: &[u8] = include_bytes_aligned!(8, "../../../data/bsk");
+    static BSK_BYTES: &[u8] = include_bytes!("../../../data/bsk");
     
     let after_include_bytes = env::cycle_count();
 

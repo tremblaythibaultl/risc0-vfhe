@@ -9,12 +9,11 @@ use ttfhe::{
 
 fn main() {
     // let sk1 = lwe_keygen();
-    let sk1: LweSecretKey = bincode::deserialize(&std::fs::read("../data/sk1").unwrap()).unwrap();
+    let sk1: LweSecretKey = bincode::deserialize(&std::fs::read("data/sk1").unwrap()).unwrap();
     // let sk2 = keygen();
     // let sk2: SecretKey = bincode::deserialize(&std::fs::read("../data/sk2").unwrap()).unwrap();
     // let bsk = compute_bsk(&sk1, &sk2); // list of encryptions under `sk2` of the bits of `sk1`.
-    // let bsk: BootstrappingKey =
-        // bincode::deserialize(&std::fs::read("../data/bsk").unwrap()).unwrap();
+    // let bsk: BootstrappingKey = bincode::deserialize(&std::fs::read("../data/bsk").unwrap()).unwrap();
 
     // let ksk = compute_ksk(&sk2.recode(), &sk1); // list of encryptions under `sk1` of the bits of `sk2`.
 
