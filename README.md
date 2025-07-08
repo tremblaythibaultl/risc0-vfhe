@@ -7,7 +7,7 @@ The aim of this project is to prove and verify the correct execution of a single
 ## Instructions
 
 ### Requirements
-Risc0 zkVM (and all of its subdependencies): see installation procedure [here](https://dev.risczero.com/api/zkvm/install).
+Risc0 zkVM: see installation procedure [here](https://dev.risczero.com/api/zkvm/install).
 
 ### Code structure
 The project is divided in a guest (code to be executed in the zkVM) and a host (orchestrator for proving and verifying the guest code).
@@ -16,13 +16,16 @@ This follows paradigms introduced by Risc0. See [Risc0](https://dev.risczero.com
 The code relies on the [ttfhe](https://github.com/tremblaythibaultl/ttfhe) library, a simple (and thus zkVM-compatible) Rust implementation of the [TFHE](https://eprint.iacr.org/2018/421) cryptosystem. 
 
 ### Usage
-1. Build the program:
+- To test the program and make sure it compiles, use the "dev mode" provided by the Risc0 API:
 ```bash
-$ cd program 
-$ cargo prove build
+RISC0_DEV_MODE=1 RUST_LOG=info RISC0_INFO=1 cargo run --release
 ```
-2. Execute the program:
+- To generate proofs, execute
 ```bash
-$ cd ../script 
-$ RUST_LOG=info cargo run --release -- --execute
+RISC0_DEV_MODE=0 RUST_LOG=info RISC0_INFO=1 cargo run --release
 ```
+
+#### WARNING
+The results presented in the paper were obtained by running the zkVM on a `hpc7a.96xlarge` AWS EC2 instance with 192 CPU cores and 768 GB memory. 
+
+zkVMs are notoriously resource-hungry. As such, we do not guarantee the reproducibility of our results on less powerful machines. In fact, trying to execute this prototype on a machine with insufficient resources will likely result in a "killed" process.
