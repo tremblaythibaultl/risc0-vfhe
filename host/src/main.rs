@@ -12,6 +12,7 @@ use ttfhe::{
 };
 
 fn main() {
+    // Generate key material
     let sk1 = lwe_keygen();
     let sk2 = keygen();
     let bsk = compute_bsk(&sk1, &sk2); // list of encryptions under `sk2` of the bits of `sk1`.
@@ -35,10 +36,7 @@ fn step_by_step_blind_rotation(c: &LweCiphertext, bsk: &BootstrappingKey) {
     for i in 0..bsk.len() {
         let now = Instant::now();
 
-        // An executor environment describes the configurations for the zkVM
-        // including program inputs.
-
-        // For example:
+        // Write the inputs to the environment.
         let env = ExecutorEnv::builder()
             .write(&bsk[i])
             .unwrap()
@@ -52,21 +50,20 @@ fn step_by_step_blind_rotation(c: &LweCiphertext, bsk: &BootstrappingKey) {
         // Obtain the default prover.
         let prover = default_prover();
 
-        // Proof information by proving the specified ELF binary.
-        // This struct contains the receipt along with statistics about execution of the guest
+        // Generate the proof.
         let prove_info = prover.prove(env, BR_ELF).unwrap();
 
-        // extract the receipt.
+        // Extract output and proof.
         let receipt = prove_info.receipt;
 
-        // The receipt was verified at the end of proving, but the below code is an
-        // example of how someone else could verify this receipt.
-        receipt.verify(BR_ID).unwrap();
-
+        // Read output.
         c_prime = receipt.journal.decode().unwrap();
 
+        // Verify proof.
+        receipt.verify(BR_ID).unwrap();
+
         println!(
-            "Computed blind rotation step number {i} in {}",
+            "Computed blind rotation step number {i} in {} seconds",
             now.elapsed().as_secs()
         );
     }
